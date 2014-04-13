@@ -82,8 +82,12 @@ public class MainActivity extends FragmentActivity {
 			QuickContactFragment dialog = new QuickContactFragment();
 			dialog.show(getSupportFragmentManager(), "QuickContactFragment");
 			return true;
-
+        case R.id.action_icon_title:
+            IconTextTabFragment icon_text_dialog = new IconTextTabFragment();
+            icon_text_dialog.show(getSupportFragmentManager(), "IconTextTabFragment");
+            return true;
 		}
+
 
 		return super.onOptionsItemSelected(item);
 	}
