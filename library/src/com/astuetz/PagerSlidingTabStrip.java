@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *	  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -49,16 +49,16 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 		public int getPageIconResId(int position);
 	}
 
-    public interface IconTitleProvider {
-        public CharSequence getPageTitle(int position);
-        public int getPageIconResId(int position);
-    }
+	public interface IconTitleProvider {
+		public CharSequence getPageTitle(int position);
+		public int getPageIconResId(int position);
+	}
 
 	// @formatter:off
 	private static final int[] ATTRS = new int[] {
 		android.R.attr.textSize,
 		android.R.attr.textColor
-    };
+	};
 	// @formatter:on
 
 	private LinearLayout.LayoutParams defaultTabLayoutParams;
@@ -202,9 +202,9 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 			if (pager.getAdapter() instanceof IconTabProvider) {
 				addIconTab(i, ((IconTabProvider) pager.getAdapter()).getPageIconResId(i));
 			} else if (pager.getAdapter() instanceof IconTitleProvider ) {
-                IconTitleProvider adapter = (IconTitleProvider) pager.getAdapter();
-                addIconTextTab(i, adapter.getPageIconResId(i), adapter.getPageTitle(i));
-            }else {
+				IconTitleProvider adapter = (IconTitleProvider) pager.getAdapter();
+				addIconTextTab(i, adapter.getPageIconResId(i), adapter.getPageTitle(i));
+			}else {
 				addTextTab(i, pager.getAdapter().getPageTitle(i).toString());
 			}
 
@@ -242,15 +242,15 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 		addTab(position, tab);
 	}
 
-    private void addIconTextTab(final int position, int resId, CharSequence title) {
-        TextView tab = new TextView(getContext());
-            tab.setCompoundDrawablesWithIntrinsicBounds(resId, 0, 0, 0);
+	private void addIconTextTab(final int position, int resId, CharSequence title) {
+		TextView tab = new TextView(getContext());
+			tab.setCompoundDrawablesWithIntrinsicBounds(resId, 0, 0, 0);
 
-        tab.setText(title);
-        tab.setGravity(Gravity.CENTER);
-        tab.setSingleLine();
-        addTab(position, tab);
-    }
+		tab.setText(title);
+		tab.setGravity(Gravity.CENTER);
+		tab.setSingleLine();
+		addTab(position, tab);
+	}
 
 	private void addIconTab(final int position, int resId) {
 
