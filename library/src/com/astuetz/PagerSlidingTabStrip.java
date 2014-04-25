@@ -38,6 +38,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.astuetz.pagerslidingtabstrip.R;
 
@@ -54,6 +55,10 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 		public int getPageIconResId(int position);
 	}
 
+	public interface ToggleTabProvider {
+		public ToggleButton getTabAt(int position, Context context);
+	}
+	
 	// @formatter:off
 	private static final int[] ATTRS = new int[] {
 		android.R.attr.textSize,
@@ -102,6 +107,9 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 	private int tabBackgroundResId = R.drawable.background_tab;
 
 	private Locale locale;
+
+	private boolean useToggleTab = false;
+	private ToggleButton lastClickTab = null;
 
 	public PagerSlidingTabStrip(Context context) {
 		this(context, null);
@@ -194,6 +202,8 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 	public void notifyDataSetChanged() {
 
 		tabsContainer.removeAllViews();
+		useToggleTab = false;
+		lastClickTab = null;
 
 		tabCount = pager.getAdapter().getCount();
 
@@ -204,10 +214,21 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 			} else if (pager.getAdapter() instanceof IconTitleProvider ) {
 				IconTitleProvider adapter = (IconTitleProvider) pager.getAdapter();
 				addIconTextTab(i, adapter.getPageIconResId(i), adapter.getPageTitle(i));
-			}else {
+			} else if (pager.getAdapter() instanceof ToggleTabProvider ) {
+				useToggleTab = true;
+				ToggleTabProvider adapter = (ToggleTabProvider)pager.getAdapter();
+				addTab(i, adapter.getTabAt(i, getContext()));
+			} else {
 				addTextTab(i, pager.getAdapter().getPageTitle(i).toString());
 			}
 
+		}
+
+		if ( useToggleTab ) {
+			lastClickTab = (ToggleButton) tabsContainer.getChildAt(0);
+			if ( lastClickTab != null ) {
+				lastClickTab.setChecked(true);
+			}
 		}
 
 		updateTabStyles();
@@ -262,19 +283,34 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 	}
 
 	private void addTab(final int position, View tab) {
-		tab.setFocusable(true);
-		tab.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				pager.setCurrentItem(position);
-			}
-		});
+		if ( useToggleTab ) {
+			tab.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					pager.setCurrentItem(position);
+					ToggleButton tb = (ToggleButton)v;
+					toggleTabIfUsingToggleTabProvider(tb);
+				}
+			});
+		} else {
+			tab.setFocusable(true);
+			tab.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					pager.setCurrentItem(position);
+				}
+			});
+		}
 
 		tab.setPadding(tabPadding, 0, tabPadding, 0);
 		tabsContainer.addView(tab, position, shouldExpand ? expandedTabLayoutParams : defaultTabLayoutParams);
 	}
 
 	private void updateTabStyles() {
+		
+		if ( useToggleTab ) {
+			return;
+		}
 
 		for (int i = 0; i < tabCount; i++) {
 
@@ -401,8 +437,20 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 			if (delegatePageListener != null) {
 				delegatePageListener.onPageSelected(position);
 			}
+			toggleTabIfUsingToggleTabProvider(
+					(ToggleButton)tabsContainer.getChildAt(position));
 		}
 
+	}
+
+	private void toggleTabIfUsingToggleTabProvider(ToggleButton newTab) {
+		if ( useToggleTab ) {
+			if ( lastClickTab != null ) {
+				lastClickTab.setChecked(false);
+			}
+			lastClickTab = newTab;
+			lastClickTab.setChecked(true);
+		}
 	}
 
 	public void setIndicatorColor(int indicatorColor) {
