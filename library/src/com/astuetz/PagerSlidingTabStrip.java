@@ -95,6 +95,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 	private int underlineHeight = 2;
 	private int dividerPadding = 12;
 	private int tabPadding = 24;
+	private boolean shouldSetPadding = true;
 	private int dividerWidth = 1;
 
 	private int tabTextSize = 12;
@@ -160,6 +161,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 		underlineHeight = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_pstsUnderlineHeight, underlineHeight);
 		dividerPadding = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_pstsDividerPadding, dividerPadding);
 		tabPadding = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_pstsTabPaddingLeftRight, tabPadding);
+		shouldSetPadding = a.getBoolean(R.styleable.PagerSlidingTabStrip_pstsShouldSetPadding, shouldSetPadding);
 		tabBackgroundResId = a.getResourceId(R.styleable.PagerSlidingTabStrip_pstsTabBackground, tabBackgroundResId);
 		shouldExpand = a.getBoolean(R.styleable.PagerSlidingTabStrip_pstsShouldExpand, shouldExpand);
 		scrollOffset = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_pstsScrollOffset, scrollOffset);
@@ -302,7 +304,9 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 			});
 		}
 
-		tab.setPadding(tabPadding, 0, tabPadding, 0);
+		if ( shouldSetPadding ) {
+			tab.setPadding(tabPadding, 0, tabPadding, 0);
+		}
 		tabsContainer.addView(tab, position, shouldExpand ? expandedTabLayoutParams : defaultTabLayoutParams);
 	}
 
